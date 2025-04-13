@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     PRIMARY KEY (user_id, preference_id)
 );
 
+CREATE CUSTOM INDEX user_preferences_value_idx ON messaging.user_preferences (value)
+  USING 'StorageAttachedIndex';
+
 -- Refactored channels table
 CREATE TABLE IF NOT EXISTS channels (
     id bigint PRIMARY KEY,
@@ -27,6 +30,8 @@ CREATE TABLE IF NOT EXISTS channels (
     updated_at timestamp
 );
 
+CREATE CUSTOM INDEX channels_creator_id_idx ON messaging.channels (creator_id)
+  USING 'StorageAttachedIndex';
 
 -- Refactored messages table
 CREATE TABLE IF NOT EXISTS messages (

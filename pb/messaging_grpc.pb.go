@@ -21,7 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	MessagingService_GetUser_FullMethodName                 = "/messaging.MessagingService/GetUser"
 	MessagingService_GetUserByEmail_FullMethodName          = "/messaging.MessagingService/GetUserByEmail"
-	MessagingService_ListUserPreferences_FullMethodName     = "/messaging.MessagingService/ListUserPreferences"
+	MessagingService_GetUserPreferences_FullMethodName      = "/messaging.MessagingService/GetUserPreferences"
 	MessagingService_CreateChannel_FullMethodName           = "/messaging.MessagingService/CreateChannel"
 	MessagingService_ListChannelsByCreatorId_FullMethodName = "/messaging.MessagingService/ListChannelsByCreatorId"
 	MessagingService_PostMessage_FullMethodName             = "/messaging.MessagingService/PostMessage"
@@ -34,7 +34,7 @@ const (
 type MessagingServiceClient interface {
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserRequestByEmail, opts ...grpc.CallOption) (*GetUserResponseByEmail, error)
-	ListUserPreferences(ctx context.Context, in *ListUserPreferencesRequest, opts ...grpc.CallOption) (*ListUserPreferencesResponse, error)
+	GetUserPreferences(ctx context.Context, in *GetUserPreferencesRequest, opts ...grpc.CallOption) (*GetUserPreferencesResponse, error)
 	CreateChannel(ctx context.Context, in *CreateChannelRequest, opts ...grpc.CallOption) (*CreateChannelResponse, error)
 	ListChannelsByCreatorId(ctx context.Context, in *ListChannelsRequestByCreatorId, opts ...grpc.CallOption) (*ListChannelsResponseByCreatorId, error)
 	PostMessage(ctx context.Context, in *PostMessageRequest, opts ...grpc.CallOption) (*PostMessageResponse, error)
@@ -69,10 +69,10 @@ func (c *messagingServiceClient) GetUserByEmail(ctx context.Context, in *GetUser
 	return out, nil
 }
 
-func (c *messagingServiceClient) ListUserPreferences(ctx context.Context, in *ListUserPreferencesRequest, opts ...grpc.CallOption) (*ListUserPreferencesResponse, error) {
+func (c *messagingServiceClient) GetUserPreferences(ctx context.Context, in *GetUserPreferencesRequest, opts ...grpc.CallOption) (*GetUserPreferencesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListUserPreferencesResponse)
-	err := c.cc.Invoke(ctx, MessagingService_ListUserPreferences_FullMethodName, in, out, cOpts...)
+	out := new(GetUserPreferencesResponse)
+	err := c.cc.Invoke(ctx, MessagingService_GetUserPreferences_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func (c *messagingServiceClient) GetRecentMessages(ctx context.Context, in *GetR
 type MessagingServiceServer interface {
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	GetUserByEmail(context.Context, *GetUserRequestByEmail) (*GetUserResponseByEmail, error)
-	ListUserPreferences(context.Context, *ListUserPreferencesRequest) (*ListUserPreferencesResponse, error)
+	GetUserPreferences(context.Context, *GetUserPreferencesRequest) (*GetUserPreferencesResponse, error)
 	CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error)
 	ListChannelsByCreatorId(context.Context, *ListChannelsRequestByCreatorId) (*ListChannelsResponseByCreatorId, error)
 	PostMessage(context.Context, *PostMessageRequest) (*PostMessageResponse, error)
@@ -146,8 +146,8 @@ func (UnimplementedMessagingServiceServer) GetUser(context.Context, *GetUserRequ
 func (UnimplementedMessagingServiceServer) GetUserByEmail(context.Context, *GetUserRequestByEmail) (*GetUserResponseByEmail, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
 }
-func (UnimplementedMessagingServiceServer) ListUserPreferences(context.Context, *ListUserPreferencesRequest) (*ListUserPreferencesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListUserPreferences not implemented")
+func (UnimplementedMessagingServiceServer) GetUserPreferences(context.Context, *GetUserPreferencesRequest) (*GetUserPreferencesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserPreferences not implemented")
 }
 func (UnimplementedMessagingServiceServer) CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateChannel not implemented")
@@ -218,20 +218,20 @@ func _MessagingService_GetUserByEmail_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessagingService_ListUserPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListUserPreferencesRequest)
+func _MessagingService_GetUserPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserPreferencesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessagingServiceServer).ListUserPreferences(ctx, in)
+		return srv.(MessagingServiceServer).GetUserPreferences(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MessagingService_ListUserPreferences_FullMethodName,
+		FullMethod: MessagingService_GetUserPreferences_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessagingServiceServer).ListUserPreferences(ctx, req.(*ListUserPreferencesRequest))
+		return srv.(MessagingServiceServer).GetUserPreferences(ctx, req.(*GetUserPreferencesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -324,8 +324,8 @@ var MessagingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MessagingService_GetUserByEmail_Handler,
 		},
 		{
-			MethodName: "ListUserPreferences",
-			Handler:    _MessagingService_ListUserPreferences_Handler,
+			MethodName: "GetUserPreferences",
+			Handler:    _MessagingService_GetUserPreferences_Handler,
 		},
 		{
 			MethodName: "CreateChannel",
