@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package messaging;
+
+option go_package = "./pb";
+
+import "google/protobuf/timestamp.proto";
+
+// Represents a user on the platform
+message User {
+  int64 id = 1;
+  string username = 2;
+  string alias_name = 3;
+  string email = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// Represents user-specific preferences
+message UserPreference {
+  int64 user_id = 1;
+  int64 preference_id = 2;
+  string value = 3;
+}
+
+// Represents a chat or discussion channel
+message Channel {
+  int64 id = 1;
+  string name = 2;
+  string display_name = 3;
+  string description = 4;
+  int64 creator_id = 5;
+  bool is_private = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// Represents a single chat message in a channel
+message Message {
+  int64 channel_id = 1;
+  int32 bucket = 2;
+  int64 message_id = 3;
+  int64 author_id = 4;
+  string content = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message GetUserRequestByEmail {
+  string email = 1;
+}
+
+message GetUserResponseByEmail {
+  User user = 1;
+}
+
+message ListUserPreferencesRequest {
+  string value = 1;
+  bytes paging_state = 2;
+  int32 page_size = 3;
+}
+
+message ListUserPreferencesResponse {
+  repeated UserPreference user_preferences = 1;
+  bytes paging_state = 2;
+}
+
+message CreateChannelRequest {
+  int64 creator_id = 1;
+  string name = 2;
+  string display_name = 3;
+  string description = 4;
+  bool is_private = 5;
+}
+
+message CreateChannelResponse {
+  Channel channel = 1;
+}
+
+message ListChannelsRequestByCreatorId {
+  int64 creator_id = 1;
+  bytes paging_state = 2;
+  int32 page_size = 3;
+}
+
+message ListChannelsResponseByCreatorId {
+  repeated Channel channels = 1;
+  bytes paging_state = 2;
+}
+
+message PostMessageRequest {
+  int64 channel_id = 1;
+  int64 author_id = 2;
+  string content = 3;
+}
+
+message PostMessageResponse {
+  Message message = 1;
+}
+
+message GetRecentMessagesRequest {
+  int64 channel_id = 1;
+  int32 bucket = 2;
+  bytes paging_state = 3;
+  int32 page_size = 4;
+}
+
+message GetRecentMessagesResponse {
+  repeated Message messages = 1;
+  bytes paging_state = 2;
+}
+
+service MessagingService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUserByEmail(GetUserRequestByEmail) returns (GetUserResponseByEmail);
+  rpc ListUserPreferences(ListUserPreferencesRequest) returns (ListUserPreferencesResponse);
+
+  rpc CreateChannel(CreateChannelRequest) returns (CreateChannelResponse);
+  rpc ListChannelsByCreatorId(ListChannelsRequestByCreatorId) returns (ListChannelsResponseByCreatorId);
+
+  rpc PostMessage(PostMessageRequest) returns (PostMessageResponse);
+  rpc GetRecentMessages(GetRecentMessagesRequest) returns (GetRecentMessagesResponse);
+}
